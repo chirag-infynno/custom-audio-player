@@ -22,7 +22,36 @@ const AudioPlayer = () => {
     min: null,
     sec: null,
   });
-  const [blockList, setBlocakList] = useState([]);
+  const [blockList, setBlocakList] = useState([
+    // {
+    //   action: "Exercises ",
+    //   endPosition: 13,
+    //   id: 1,
+    //   startPosition: 9,
+    //   timeStampColor: "#FF0000",
+    // },
+    // {
+    //   action: "Questions ",
+    //   endPosition: 36,
+    //   id: 2,
+    //   startPosition: 19,
+    //   timeStampColor: "#309c00",
+    // },
+    // {
+    //   "startPosition": 43,
+    //   "endPosition": 59,
+    //   "timeStampColor": "#fff40f",
+    //   "id": 3,
+    //   "action": "Need Review ",
+    // },
+    // {
+    //   "startPosition": 44,
+    //   "endPosition": 50,
+    //   "timeStampColor": "#FF0000",
+    //   "id": 1,
+    //   "action": "Exercises ",
+    // },
+  ]);
   const [isPlaying, setIsPlaying] = useState(false);
   const [duration, setDuration] = useState(0);
   const [currentTime, setCurrentTime] = useState(0);
@@ -50,7 +79,6 @@ const AudioPlayer = () => {
   }, []);
 
   const calculateTime = (secs) => {
-    console.log("all sec", secs);
     const minutes = Math.floor(secs / 60);
     const returnedMinutes = minutes < 10 ? `0${minutes}` : `${minutes}`;
     const seconds = Math.floor(secs % 60);
@@ -139,13 +167,12 @@ const AudioPlayer = () => {
           (highLightItem?.endPosition * 350) / duration
         );
         let blockWidth = endPosition - leftSpace;
-        console.log("leftSpace", leftSpace);
         return {
           leftSpace: leftSpace,
           blockWidth: blockWidth,
           timeStampColor: highLightItem.timeStampColor,
           id: highLightItem.id,
-          index: index + 1,
+          index: highLightItem.index + 1 || index + 1,
         };
       });
       setHighLightBlocks([...listdata, ...highLightBlocks]);
@@ -154,13 +181,13 @@ const AudioPlayer = () => {
     } else {
       // console.log("find all data", find);
       let changeIndex = find.map((data) => {
+        console.log("index", data.index, "global index", index);
         return {
           ...data,
-          index: data.index - 1,
+          index: data.index !== 1 ? data.index - 1 : data.index,
         };
       });
 
-      console.log("changeIndex ", changeIndex);
       if (index > 1) {
         setindex(index - 1);
       } else {
@@ -212,6 +239,10 @@ const AudioPlayer = () => {
   };
   return (
     <>
+      <div>upload auio</div>
+
+      <input type="file" onChange={(e) => console.log("e", e)} />
+
       <div
         style={{
           display: "flex",
@@ -508,21 +539,15 @@ const AudioPlayer = () => {
                 style={{
                   backgroundColor: data.timeStampColor,
                 }}
+                onClick={() => {
+                  console.log(data);
+                }}
               >
                 {data.action}
               </td>
             </tr>
           ))}
         </table>
-      </div>
-
-      <div>
-        <input
-          type="range"
-          className={styles.progressBar}
-          ref={progressBar}
-          onChange={changeRange}
-        />
       </div>
     </>
   );
