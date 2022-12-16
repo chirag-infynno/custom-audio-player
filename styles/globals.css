@@ -14,3 +14,36 @@ a {
 * {
   box-sizing: border-box;
 }
+
+
+.custom{
+  display: flex;
+  justify-items: center;
+  align-items: center;
+  gap:10px
+
+
+}
+
+.startpositon{
+  display: flex;
+  flex-direction: column;
+}
+
+.alllabel{
+  display: flex;
+}
+
+
+table {
+  font-family: arial, sans-serif;
+  border-collapse: collapse;
+  width: 100%;
+}
+
+td, th {
+  border: 1px solid #dddddd;
+  text-align: left;
+  padding: 8px;
+}
+
