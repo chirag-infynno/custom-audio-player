@@ -59,14 +59,17 @@ const AudioPlayer = () => {
   const [index, setindex] = useState(0);
 
   // references
+
+  const [audio, setAudio] = useState();
   const audioPlayer = useRef(); // reference our audio component
   const progressBar = useRef(); // reference our progress bar
   const animationRef = useRef(); // reference the animation
   const [message, setMessage] = useState("");
+  const [maxValue, setMaxValue] = useState();
   useEffect(() => {
-    const seconds = Math.floor(audioPlayer.current.duration);
-    setDuration(seconds);
-    progressBar.current.max = seconds;
+    // const seconds = Math.floor(audioPlayer.current.duration);
+    // setDuration(seconds);
+    // progressBar.current.max = seconds;
   }, [audioPlayer?.current?.loadedmetadata, audioPlayer?.current?.readyState]);
 
   useEffect(() => {
@@ -78,6 +81,19 @@ const AudioPlayer = () => {
     // setHighLightBlocks(hBlocks);
   }, []);
 
+  const uploadAudio = (e) => {
+    console.log(",aknskcnk");
+    console.log("e", e);
+
+    console.log(",abshbchjbsc", URL?.createObjectURL(e.target.files[0]));
+    setAudio(URL?.createObjectURL(e.target.files[0]));
+
+    // const seconds = Math.floor(audioPlayer.current.duration);
+    // console.log("sec", seconds);
+    // setDuration(seconds);
+    // progressBar.current.max = seconds;
+  };
+
   const calculateTime = (secs) => {
     const minutes = Math.floor(secs / 60);
     const returnedMinutes = minutes < 10 ? `0${minutes}` : `${minutes}`;
@@ -86,6 +102,17 @@ const AudioPlayer = () => {
     return `${returnedMinutes}:${returnedSeconds}`;
   };
 
+  const calculateTimeEnd = () => {
+    // const secs = Math.floor(audioPlayer.current.duration);
+
+    // console.log("get all sec", audioPlayer);
+    const minutes = Math.floor(secs / 60);
+    const returnedMinutes = minutes < 10 ? `0${minutes}` : `${minutes}`;
+    const seconds = Math.floor(secs % 60);
+    const returnedSeconds = seconds < 10 ? `0${seconds}` : `${seconds}`;
+    return `${returnedMinutes}:${returnedSeconds}`;
+  };
+  const [show, setShow] = useState(false);
   const togglePlayPause = () => {
     const prevValue = isPlaying;
     setIsPlaying(!prevValue);
@@ -233,322 +260,363 @@ const AudioPlayer = () => {
     console.log("startime", startime, endtime);
   };
 
-  useEffect(() => {}, [highLightBlocks]);
+  const calculateEndTime = () => {
+    console.log("kaskckn", audioPlayer?.current?.duration);
+  };
+  const submtImage = () => {
+    // const seconds = Math.floor(audioPlayer.current.duration);
+    // setDuration(seconds);
+    // progressBar.current.max = seconds;
+
+    setShow(true);
+    // console.log("upload", seconds);
+    // console.log("upload", audioPlayer);
+    // setAudio(e);
+  };
+
+  useEffect(() => {
+    setTimeout(() => {
+      const seconds = Math.floor(audioPlayer?.current?.duration);
+      setDuration(seconds);
+      setMaxValue(seconds);
+    }, 300);
+  }, [highLightBlocks, audio, duration, show]);
+
   const getNewData = (e) => {
     console.log("asnckn", e);
   };
   return (
     <>
-      <div>upload auio</div>
+      {!show && (
+        <div>
+          <div>Upload Audio/Video</div>
 
-      <input type="file" onChange={(e) => console.log("e", e)} />
-
-      <div
-        style={{
-          display: "flex",
-          justifyContent: "space-between",
-        }}
-      >
-        <div className={styles.audioPlayer}>
-          <audio
-            ref={audioPlayer}
-            src="https://cdn.simplecast.com/audio/cae8b0eb-d9a9-480d-a652-0defcbe047f4/episodes/af52a99b-88c0-4638-b120-d46e142d06d3/audio/500344fb-2e2b-48af-be86-af6ac341a6da/default_tc.mp3"
-            preload="metadata"
-          ></audio>
-          <button className={styles.forwardBackward} onClick={backThirty}>
-            <BsArrowLeftShort /> 30
-          </button>
-          <button onClick={togglePlayPause} className={styles.playPause}>
-            {isPlaying ? <FaPause /> : <FaPlay className={styles.play} />}
-          </button>
-          <button className={styles.forwardBackward} onClick={forwardThirty}>
-            30 <BsArrowRightShort />
-          </button>
-
-          {/* current time */}
-          <div className={styles.currentTime}>{calculateTime(currentTime)}</div>
-
-          {/* progress bar */}
-          <div className="progress-4 relative">
-            {highLightBlocks.length > 0 &&
-              highLightBlocks.map((highLightBlock) => {
-                if (highLightBlock.leftSpace || highLightBlock.blockWidth) {
-                  let blockStyle = `w-[${highLightBlock.blockWidth}px] left-[${highLightBlock.leftSpace}px] `;
-                  return (
-                    <div
-                      // width={highLightBlock.blockWidth + "px"}
-
-                      className={`progress ${blockStyle}`}
-                    ></div>
-                  );
-                }
-                return null;
-              })}
-            <div className={styles.mainRange} onClick={getNewData}>
-              <input
-                type="range"
-                className={styles.progressBar}
-                defaultValue="0"
-                ref={progressBar}
-                onChange={changeRange}
-              />
-              <div className={styles.seekBar}>
-                {highLightBlocks?.map((data) => (
-                  <div
-                    className={styles.seekBar1}
-                    style={{
-                      width: `${data.blockWidth}px`,
-                      height: "60%",
-                      left: `${data.leftSpace}px`,
-                      backgroundColor: `${data.timeStampColor}`,
-                      position: "absolute",
-                      opacity: 0.7,
-                      zIndex: data.index,
-                    }}
-                  ></div>
-                ))}
-              </div>
-            </div>
-          </div>
-
-          {/* duration */}
-          <div className={styles.duration}>
-            {duration && !isNaN(duration) && calculateTime(duration)}
-          </div>
+          <input type="file" onChange={uploadAudio} />
+          {audio && (
+            <button
+              onClick={submtImage}
+              // style={{
+              //   opacity: show ? 100 : 24,
+              // }}
+            >
+              Upload Audio/Video
+            </button>
+          )}
         </div>
-        <div className={styles.buttonlist}>
-          <button
-            style={{
-              backgroundColor: "#FF0000",
-            }}
-            className={styles.buttonStyle}
-            onClick={() => {
-              getBlockPositions({ id: 1 });
-            }}
-          >
-            Exercises
-          </button>
-          <button
-            style={{
-              backgroundColor: "#309c00",
-            }}
-            className={styles.buttonStyle}
-            onClick={() => getBlockPositions({ id: 2 })}
-          >
-            Questions
-          </button>
-          <button
-            className={styles.buttonStyle}
-            style={{
-              backgroundColor: "#fff40f",
-            }}
-            onClick={() => getBlockPositions({ id: 3 })}
-          >
-            Need Review
-          </button>
-        </div>
-      </div>
+      )}
 
-      <div
-        className="custom"
-        style={{
-          position: "relative",
-        }}
-      >
-        <div
-          style={{
-            position: "absolute",
-            color: "red",
-            top: "50px",
-          }}
-        >
-          {message}
-        </div>
-        <div
-          className=""
-          style={{
-            display: "flex",
-            flexDirection: "column",
-            gap: 40,
-          }}
-        >
+      {show && (
+        <div>
           <div
             style={{
               display: "flex",
-              gap: 10,
+              justifyContent: "space-between",
             }}
           >
-            <div className="startpositon">
-              <div> Start Time</div>
-              <div className="alllabel">
-                <div>
-                  <input
-                    type="number"
-                    name="hour"
-                    min={0}
-                    max={23}
-                    placeholder="HH"
-                    value={startTime.hour}
-                    onChange={changeStartdate}
-                  />
-                </div>
+            <div className={styles.audioPlayer}>
+              <audio ref={audioPlayer} src={audio} preload="metadata"></audio>
+              <button className={styles.forwardBackward} onClick={backThirty}>
+                <BsArrowLeftShort /> 30
+              </button>
+              <button onClick={togglePlayPause} className={styles.playPause}>
+                {isPlaying ? <FaPause /> : <FaPlay className={styles.play} />}
+              </button>
+              <button
+                className={styles.forwardBackward}
+                onClick={forwardThirty}
+              >
+                30 <BsArrowRightShort />
+              </button>
 
-                <div>
-                  <input
-                    type="number"
-                    name="min"
-                    min={0}
-                    max={59}
-                    value={startTime.min}
-                    placeholder="MM"
-                    onChange={changeStartdate}
-                  />
-                </div>
+              {/* current time */}
+              <div className={styles.currentTime}>
+                {calculateTime(currentTime)}
+              </div>
 
-                <div>
+              {/* progress bar */}
+              <div className="progress-4 relative">
+                {highLightBlocks.length > 0 &&
+                  highLightBlocks.map((highLightBlock) => {
+                    if (highLightBlock.leftSpace || highLightBlock.blockWidth) {
+                      let blockStyle = `w-[${highLightBlock.blockWidth}px] left-[${highLightBlock.leftSpace}px] `;
+                      return (
+                        <div
+                          // width={highLightBlock.blockWidth + "px"}
+
+                          className={`progress ${blockStyle}`}
+                        ></div>
+                      );
+                    }
+                    return null;
+                  })}
+                <div className={styles.mainRange} onClick={getNewData}>
                   <input
-                    type="number"
-                    name="sec"
-                    min={0}
-                    // max={60}
-                    value={startTime.sec}
-                    placeholder="SS"
-                    max={59}
-                    onChange={changeStartdate}
+                    type="range"
+                    className={styles.progressBar}
+                    defaultValue="0"
+                    ref={progressBar}
+                    max={maxValue}
+                    onChange={changeRange}
                   />
+                  <div className={styles.seekBar}>
+                    {highLightBlocks?.map((data) => (
+                      <div
+                        className={styles.seekBar1}
+                        style={{
+                          width: `${data.blockWidth}px`,
+                          height: "60%",
+                          left: `${data.leftSpace}px`,
+                          backgroundColor: `${data.timeStampColor}`,
+                          position: "absolute",
+                          opacity: 0.7,
+                          zIndex: data.index,
+                        }}
+                      ></div>
+                    ))}
+                  </div>
                 </div>
               </div>
-            </div>
-            <div className="startpositon">
-              <div> End Time</div>
 
-              <div className="alllabel">
-                <div>
-                  <input
-                    type="number"
-                    name="hour"
-                    min={0}
-                    max={24}
-                    placeholder="HH"
-                    value={endTime.hour}
-                    onChange={changeEndTime}
-                  />
-                </div>
-                <div>
-                  <input
-                    type="number"
-                    name="min"
-                    min={0}
-                    max={59}
-                    value={endTime.min}
-                    placeholder="MM"
-                    onChange={changeEndTime}
-                  />
-                </div>
-                <div>
-                  <input
-                    type="number"
-                    name="sec"
-                    min={0}
-                    max={59}
-                    value={endTime.sec}
-                    placeholder="SS"
-                    onChange={changeEndTime}
-                  />
-                </div>
+              {/* duration */}
+              <div className={styles.duration}>
+                {/* {calculateEndTime(duration)} */}
+                {/* {calculateTimeEnd()} */}
+                {duration && !isNaN(duration) && calculateTime(duration)}
               </div>
             </div>
-          </div>
-          <div
-            style={{
-              display: "flex",
-              gap: 10,
-            }}
-          >
-            <button
-              style={{
-                backgroundColor: "#FF0000",
-              }}
-              className={styles.buttonStyle}
-              onClick={() =>
-                addExercises({
-                  id: 1,
-                  color: "#FF0000",
-                  message: "Exercises Time",
-                  action: "Exercises ",
-                })
-              }
-            >
-              Add Exercises Time
-            </button>
-            <button
-              style={{
-                backgroundColor: "#309c00",
-              }}
-              className={styles.buttonStyle}
-              onClick={() =>
-                addExercises({
-                  id: 2,
-                  color: "#309c00",
-                  message: "Questions Time",
-                  action: "Questions ",
-                })
-              }
-            >
-              Add Questions Time
-            </button>
-            <button
-              style={{
-                backgroundColor: "#fff40f",
-              }}
-              className={styles.buttonStyle}
-              onClick={() =>
-                addExercises({
-                  id: 3,
-                  color: "#fff40f",
-                  message: "Review Time",
-                  action: "Need Review ",
-                })
-              }
-            >
-              Add Need Review Time
-            </button>
-          </div>
-        </div>
-      </div>
-
-      <div
-        style={{
-          marginTop: 100,
-        }}
-      >
-        <table>
-          <tr>
-            <th>index</th>
-            <th>Startime</th>
-            <th>EndTime</th>
-            <th>Action</th>
-          </tr>
-
-          {blockList.map((data, index) => (
-            <tr>
-              <td>{index + 1}</td>
-              <td>{calculateTime(data.startPosition)}</td>{" "}
-              <td>{calculateTime(data.endPosition)}</td>
-              <td
+            <div className={styles.buttonlist}>
+              <button
                 style={{
-                  backgroundColor: data.timeStampColor,
+                  backgroundColor: "#FF0000",
                 }}
+                className={styles.buttonStyle}
                 onClick={() => {
-                  console.log(data);
+                  getBlockPositions({ id: 1 });
                 }}
               >
-                {data.action}
-              </td>
-            </tr>
-          ))}
-        </table>
-      </div>
+                Exercises
+              </button>
+              <button
+                style={{
+                  backgroundColor: "#309c00",
+                }}
+                className={styles.buttonStyle}
+                onClick={() => getBlockPositions({ id: 2 })}
+              >
+                Questions
+              </button>
+              <button
+                className={styles.buttonStyle}
+                style={{
+                  backgroundColor: "#fff40f",
+                }}
+                onClick={() => getBlockPositions({ id: 3 })}
+              >
+                Need Review
+              </button>
+            </div>
+          </div>
+          <div
+            className="custom"
+            style={{
+              position: "relative",
+            }}
+          >
+            <div
+              style={{
+                position: "absolute",
+                color: "red",
+                top: "50px",
+              }}
+            >
+              {message}
+            </div>
+            <div
+              className=""
+              style={{
+                display: "flex",
+                flexDirection: "column",
+                gap: 40,
+              }}
+            >
+              <div
+                style={{
+                  display: "flex",
+                  gap: 10,
+                }}
+              >
+                <div className="startpositon">
+                  <div> Start Time</div>
+                  <div className="alllabel">
+                    <div>
+                      <input
+                        type="number"
+                        name="hour"
+                        min={0}
+                        max={23}
+                        placeholder="HH"
+                        value={startTime.hour}
+                        onChange={changeStartdate}
+                      />
+                    </div>
+
+                    <div>
+                      <input
+                        type="number"
+                        name="min"
+                        min={0}
+                        max={59}
+                        value={startTime.min}
+                        placeholder="MM"
+                        onChange={changeStartdate}
+                      />
+                    </div>
+
+                    <div>
+                      <input
+                        type="number"
+                        name="sec"
+                        min={0}
+                        // max={60}
+                        value={startTime.sec}
+                        placeholder="SS"
+                        max={59}
+                        onChange={changeStartdate}
+                      />
+                    </div>
+                  </div>
+                </div>
+                <div className="startpositon">
+                  <div> End Time</div>
+
+                  <div className="alllabel">
+                    <div>
+                      <input
+                        type="number"
+                        name="hour"
+                        min={0}
+                        max={24}
+                        placeholder="HH"
+                        value={endTime.hour}
+                        onChange={changeEndTime}
+                      />
+                    </div>
+                    <div>
+                      <input
+                        type="number"
+                        name="min"
+                        min={0}
+                        max={59}
+                        value={endTime.min}
+                        placeholder="MM"
+                        onChange={changeEndTime}
+                      />
+                    </div>
+                    <div>
+                      <input
+                        type="number"
+                        name="sec"
+                        min={0}
+                        max={59}
+                        value={endTime.sec}
+                        placeholder="SS"
+                        onChange={changeEndTime}
+                      />
+                    </div>
+                  </div>
+                </div>
+              </div>
+              <div
+                style={{
+                  display: "flex",
+                  gap: 10,
+                }}
+              >
+                <button
+                  style={{
+                    backgroundColor: "#FF0000",
+                  }}
+                  className={styles.buttonStyle}
+                  onClick={() =>
+                    addExercises({
+                      id: 1,
+                      color: "#FF0000",
+                      message: "Exercises Time",
+                      action: "Exercises ",
+                    })
+                  }
+                >
+                  Add Exercises Time
+                </button>
+                <button
+                  style={{
+                    backgroundColor: "#309c00",
+                  }}
+                  className={styles.buttonStyle}
+                  onClick={() =>
+                    addExercises({
+                      id: 2,
+                      color: "#309c00",
+                      message: "Questions Time",
+                      action: "Questions ",
+                    })
+                  }
+                >
+                  Add Questions Time
+                </button>
+                <button
+                  style={{
+                    backgroundColor: "#fff40f",
+                  }}
+                  className={styles.buttonStyle}
+                  onClick={() =>
+                    addExercises({
+                      id: 3,
+                      color: "#fff40f",
+                      message: "Review Time",
+                      action: "Need Review ",
+                    })
+                  }
+                >
+                  Add Need Review Time
+                </button>
+              </div>
+            </div>
+          </div>
+          <div
+            style={{
+              marginTop: 100,
+            }}
+          >
+            <table>
+              <tr>
+                <th>index</th>
+                <th>Startime</th>
+                <th>EndTime</th>
+                <th>Action</th>
+              </tr>
+
+              {blockList.map((data, index) => (
+                <tr>
+                  <td>{index + 1}</td>
+                  <td>{calculateTime(data.startPosition)}</td>{" "}
+                  <td>{calculateTime(data.endPosition)}</td>
+                  <td
+                    style={{
+                      backgroundColor: data.timeStampColor,
+                    }}
+                    onClick={() => {
+                      console.log(data);
+                    }}
+                  >
+                    {data.action}
+                  </td>
+                </tr>
+              ))}
+            </table>
+          </div>
+        </div>
+      )}
     </>
   );
 };
